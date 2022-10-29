@@ -1,6 +1,8 @@
 ## Instructions
 ### Linux:
 ```shell
+git clone https://github.com/Ted-Barrett/propositional-logic-evaluator.git
+cd propositional-logic-evaluator
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
@@ -8,6 +10,8 @@ python3 main.py "(P | Q)"
 ```
 ### Windows:
 ```shell
+git clone https://github.com/Ted-Barrett/propositional-logic-evaluator.git
+cd propositional-logic-evaluator
 python -m venv venv
 venv\Scripts\activate.bat
 pip install -r requirements.txt
