@@ -21,14 +21,19 @@ python main.py "(P | Q)"
 The program will print the results and also write them to a csv, `truth_table.csv`.
 Note that truth_table.csv will be overwritten each time the program is run.
 
+### Example
 ```
-$ python3 main.py "(P <+> Q)"
-  P    Q  |      (P <+> Q)
----  ---  ---  -----------
-  0    0  |              0
-  0    1  |              1
-  1    0  |              1
-  1    1  |              0
+$ python3 main.py "((P => Q) => R)" "(Q <+> R)"
+  P    Q    R  |      ((P => Q) => R)    (Q <+> R)
+---  ---  ---  ---  -----------------  -----------
+  0    0    0  |                    0            0
+  0    0    1  |                    1            1
+  0    1    0  |                    0            1
+  0    1    1  |                    1            0
+  1    0    0  |                    1            0
+  1    0    1  |                    1            1
+  1    1    0  |                    0            1
+  1    1    1  |                    1            0
 ```
 
 ### Arguments
