@@ -81,6 +81,13 @@ class expression:
             negated = True
             expr_string = expr_string[1:]
 
+        if expr_string.count("(") == 0 and len(expr_string) != 1:
+            raise ValueError(
+                "Invalid expression when parsing:",
+                expr_string,
+                "maybe you forgot some brackets?",
+            )
+
         if re.match(r"[A-Z]", expr_string):
             return variable(re.match(r"[A-Z]", expr_string).group(), negated)
 
