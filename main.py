@@ -47,6 +47,20 @@ class variable:
         return values_dict[self.character]
 
 
+class constant:
+    def __init__(self, value: bool, negated=False):
+        self.value = value
+        self.negated = negated
+
+    def __str__(self):
+        return ("~" if self.negated else "") + str(self.value)
+
+    def evaluate(self, _):
+        if self.negated:
+            return not self.value
+        return self.value
+
+
 class expression:
     def __init__(self, op: str, left, right, negated=False):
         self.op = op
@@ -87,6 +101,11 @@ class expression:
                 expr_string,
                 "maybe you forgot some brackets?",
             )
+
+        if expr_string == "t":
+            return constant(True, negated)
+        if expr_string == "f":
+            return constant(False, negated)
 
         if re.match(r"[A-Z]", expr_string):
             return variable(re.match(r"[A-Z]", expr_string).group(), negated)

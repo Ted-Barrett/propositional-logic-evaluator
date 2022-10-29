@@ -39,11 +39,15 @@ $ python3 main.py "((P => Q) => R)" "(Q <+> R)"
 ### Arguments
 The calculator takes in as many propositional logic statements as you want.
 Each must be contained within brackets and quotes, and separated by a space.
+
+A propositional logic statement must be bracketed, unless it is a variable or constant.
+Express True and False with t and f, and variables with upper-case letters.
+
 The following are all valid commands:
 ```shell
-python3 main.py "(P | Q)"
+python3 main.py "(P | ~f)"
 python3 main.py "(P => Q)" "((P => ~Q) | R)" "(P | Q)"
-python3 main.py "(((P <=> Q) => R) & S)"
+python3 main.py "(((P <=> Q) => t) & S)"
 ```
 
 Valid connectives are:
@@ -58,7 +62,7 @@ Valid connectives are:
 <br>
 `<+>`: Exclusive Or
 
-To negate an expression or variable, put an ~ in front of it. You should not include more brackets than necessary,
+To negate an expression or variable, put an `~` in front of it. You should not include more brackets than necessary,
 as this will break the program.
 
 ### Conditions of use
