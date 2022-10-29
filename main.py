@@ -48,14 +48,23 @@ class variable:
 
 
 class expression:
-    def __init__(self, op: str, left, right, negated = False):
+    def __init__(self, op: str, left, right, negated=False):
         self.op = op
         self.left = left
         self.right = right
         self.negated = negated
 
     def __str__(self):
-        return ("~" if self.negated else "") + "(" + str(self.left) + " " + self.op + " " + str(self.right) + ")"
+        return (
+            ("~" if self.negated else "")
+            + "("
+            + str(self.left)
+            + " "
+            + self.op
+            + " "
+            + str(self.right)
+            + ")"
+        )
 
     def evaluate(self, values_dict):
         value = CONNECTIVES[self.op](
@@ -71,20 +80,21 @@ class expression:
         if expr_string[0] == "~":
             negated = True
             expr_string = expr_string[1:]
+
         if re.match(r"[A-Z]", expr_string):
-            return variable(
-                re.match(r"[A-Z]", expr_string).group(),
-                negated
-            )
+            return variable(re.match(r"[A-Z]", expr_string).group(), negated)
 
         expr_string = expr_string[1:-1]
         if expr_string.count("(") == 0:
             left, op, right = expr_string.split()
             if op not in CONNECTIVES:
                 raise ValueError("Invalid connective:", op)
-            return expression(op, expression.parse(left), expression.parse(right), negated)
+            return expression(
+                op, expression.parse(left), expression.parse(right), negated
+            )
 
         left, right = get_bracket(expr_string), get_bracket(expr_string, "right")
+
         op = expr_string[len(left) + 1 : -len(right) - 1]
         if op not in CONNECTIVES:
             raise ValueError("Invalid connective:", op)
@@ -98,7 +108,11 @@ def get_bracket(s, direction="left"):
     indices = range(len(s))
     if direction == "left":
         if s[0] != "(":
-            return s.split()[0]
+            if s[0] != "~":
+                return s.split()[0]
+            if s[1] != "(":
+                return s.split()[0]
+            indices = indices[1:]
     if direction == "right":
         if s[-1] != ")":
             return s.split()[-1]
@@ -112,6 +126,8 @@ def get_bracket(s, direction="left"):
             n -= 1
         if n == 0:
             if direction == "right":
+                if s[i - 1] == "~":
+                    return s[i - 1 :]
                 return s[i:]
             return s[: i + 1]
 
@@ -146,7 +162,8 @@ def gen_truth_table(variables, expressions):
             out[-1].append(e.evaluate(d))
     return out
 
-def pretty_truth_table(variables, expressions, digits = False, headers = True):
+
+def pretty_truth_table(variables, expressions, digits=False, headers=True):
     t = gen_truth_table(variables, expressions)
     if digits:
         for x in range(len(t)):
@@ -158,13 +175,11 @@ def pretty_truth_table(variables, expressions, digits = False, headers = True):
                     else:
                         t[x][y] = "0"
     if headers:
-        return tabulate(
-            t,
-            headers=variables + ["|"] + [str(e) for e in expressions]
-        )
+        return tabulate(t, headers=variables + ["|"] + [str(e) for e in expressions])
     return tabulate(t)
 
-def save_truth_table_csv(variable, expressions, digits = True):
+
+def save_truth_table_csv(variable, expressions, digits=True):
     t = gen_truth_table(variables, expressions)
     if digits:
         for x in range(len(t)):
@@ -181,7 +196,6 @@ def save_truth_table_csv(variable, expressions, digits = True):
         csv_writer.writerows(t)
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="Truth Table Calculator")
     parser.add_argument("expressions", nargs="+")
@@ -193,4 +207,3 @@ if __name__ == "__main__":
 
     save_truth_table_csv(variables, expressions)
     print(pretty_truth_table(variables, expressions, digits=True))
-
