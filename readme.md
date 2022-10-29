@@ -49,7 +49,8 @@ Valid connectives are:
 <br>
 `<+>`: Exclusive Or
 
-To negate an expression or variable, put an ~ in front of it.
+To negate an expression or variable, put an ~ in front of it. You should not include more brackets than necessary,
+as this will break the program.
 
 ### Conditions of use
 Please note that this project was made for hobby purposes and therefore there is no guarantee for

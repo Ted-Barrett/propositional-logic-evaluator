@@ -39,9 +39,7 @@ class variable:
         self.negated = negated
 
     def __str__(self):
-        if self.negated:
-            return "~" + self.character
-        return self.character
+        return ("~" if self.negated else "") + self.character
 
     def evaluate(self, values_dict):
         if self.negated:
@@ -50,25 +48,33 @@ class variable:
 
 
 class expression:
-    def __init__(self, op: str, left, right):
+    def __init__(self, op: str, left, right, negated = False):
         self.op = op
         self.left = left
         self.right = right
+        self.negated = negated
 
     def __str__(self):
-        return "(" + str(self.left) + " " + self.op + " " + str(self.right) + ")"
+        return ("~" if self.negated else "") + "(" + str(self.left) + " " + self.op + " " + str(self.right) + ")"
 
     def evaluate(self, values_dict):
-        return CONNECTIVES[self.op](
+        value = CONNECTIVES[self.op](
             self.left.evaluate(values_dict), self.right.evaluate(values_dict)
         )
+        if self.negated:
+            value = not value
+        return value
 
     @staticmethod
     def parse(expr_string: str):
-        if re.match(r"~?[A-Z]", expr_string):
+        negated = False
+        if expr_string[0] == "~":
+            negated = True
+            expr_string = expr_string[1:]
+        if re.match(r"[A-Z]", expr_string):
             return variable(
-                re.search(r"[A-Z]", expr_string).group(),
-                bool(re.search(r"~", expr_string)),
+                re.match(r"[A-Z]", expr_string).group(),
+                negated
             )
 
         expr_string = expr_string[1:-1]
@@ -76,14 +82,14 @@ class expression:
             left, op, right = expr_string.split()
             if op not in CONNECTIVES:
                 raise ValueError("Invalid connective:", op)
-            return expression(op, expression.parse(left), expression.parse(right))
+            return expression(op, expression.parse(left), expression.parse(right), negated)
 
         left, right = get_bracket(expr_string), get_bracket(expr_string, "right")
         op = expr_string[len(left) + 1 : -len(right) - 1]
         if op not in CONNECTIVES:
             raise ValueError("Invalid connective:", op)
 
-        return expression(op, expression.parse(left), expression.parse(right))
+        return expression(op, expression.parse(left), expression.parse(right), negated)
 
 
 def get_bracket(s, direction="left"):
