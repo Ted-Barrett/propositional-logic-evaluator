@@ -209,6 +209,12 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    for e in args.expressions:
+        if e.count("(") != e.count(")"):
+            print("Incorrect number of brackets in expression:", e)
+            print("Stopping.")
+            exit()
+
     variables = get_all_variables(args.expressions)
     expressions = [expression.parse(e) for e in args.expressions]
 
